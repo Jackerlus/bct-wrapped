@@ -32,7 +32,7 @@ dbConnection.connect((err) => {
 router.post('/GetPlayerStats', (req, res, next) => {
     const discord = req.body.discord;
     console.log("Making query to bct-stats DB with player discord: " + discord);
-    const query = "CALL getPlayerWrappedStats(?)"; // Stored procedure
+    const query = "CALL GetPlayerWrappedStats(?)"; // Stored procedure
     dbConnection.query(query, [discord], (err, result) => {
         if (err) {
             console.error('Database Error:', err);
