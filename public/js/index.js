@@ -16,14 +16,14 @@ $('#button-submit').click(function() {
     .then(data => {
         console.log(data); // Handle the response data here
         $('#stats-container').empty();
-        for (let match of data[0]) {
-            $('#stats-container').append(`<div class="match"><h3>Match:</h3>`);
-            
-            for (let key of Object.keys(match)) {
-                $('#stats-container').append(`<p>${key}: ${match[key]}</p>`);
-            }
-            $('#stats-container').append(`</div><br>`);
-        }
+        $('#stats-container').append(`
+            <div class="basic-details grid justify-items-center">
+                <img src="/img/Astra_icon.png" class="max-w-50 border border-2 shadow-lg rounded-lg">
+                <p class="m-1 font-medium">${data[0][0]["player_name"]}</p>
+                <p class="m-1 font-medium">Seed ${data[0][0]["seed"]} &#8226; ${data[0][0]["team_name"]}</p>
+                <p class="m-1 font-medium"></p>
+            </div>
+        `);
     })
     .catch(error => {
         console.error('Error:', error);
