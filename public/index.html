@@ -5,22 +5,29 @@
         <title>BCT Wrapped</title>
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <meta name="description" content="Stats summary for players of the Boaster Community Tournament, AKA BCT." />
-        <link rel="stylesheet" type="text/css" href="css/style.css" />
+        <link rel="stylesheet" type="text/css" href="css/output.css" />
         <link rel="icon" href="favicon.png">
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+        </style>
         <meta name="theme-color" content="#ff8800">
     </head>
 
-    <body>
-        <h1>BCT 6 Wrapped</h1>
-        <input type="text" id="input-discord">
-        <br><br>
-        <button id="button-submit">Get your Wrapped</button>
-        <br>
-        <h2>Your BCT 6 Wrapped: </h2>
-        <div id="stats-container">
-            
+    <body class="font-sans text-base">
+        <div class="root">
+            <div class="grid justify-items-center">
+                <h1 class="m-5 text-5xl">BCT Wrapped</h1>
+                <input type="text" placeholder="Discord username" id="input-discord" class="outline-orange-400 outline outline-2 rounded-md p-2 m-3">
+                
+                <button id="button-submit" class="m-3 p-3 max-w-30 max-h-15 font-medium uppercase bg-orange-400 active:bg-orange-400 hover:bg-orange-400/80 shadow-lg border rounded-lg transition-all">
+                    Get your Wrapped!
+                </button>
+            </div>
+
+            <div id="stats-container" class="m-3 mx-15 transition-all grid justify-items-center"></div>
+
+            <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
+            <script src="js/index.js"></script>
         </div>
-        <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
-        <script src="js/index.js"></script>
     </body>
 </html>
