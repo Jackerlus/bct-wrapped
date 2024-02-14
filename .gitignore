@@ -1,2 +1,4 @@
 /node_modules
+.envpublic/css/output.css
+public/css/output.css
 .env
