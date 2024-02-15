@@ -12,22 +12,23 @@
         </style>
         <meta name="theme-color" content="#ff8800">
     </head>
-
     <body class="font-sans text-base">
-        <div class="root">
+
+        <div class="root grid justify-items-center">
             <div class="grid justify-items-center">
                 <h1 class="m-5 text-5xl">BCT Wrapped</h1>
-                <input type="text" placeholder="Discord username" id="input-discord" class="outline-orange-400 outline outline-2 rounded-md p-2 m-3">
+                <input type="text" placeholder="Discord username" id="input-discord" class="p-2 m-3 outline-orange-400 outline outline-2 rounded-md ">
                 
                 <button id="button-submit" class="m-3 p-3 max-w-30 max-h-15 font-medium uppercase bg-orange-400 active:bg-orange-400 hover:bg-orange-400/80 shadow-lg border rounded-lg transition-all">
                     Get your Wrapped!
                 </button>
             </div>
 
-            <div id="stats-container" class="m-3 mx-15 transition-all grid justify-items-center"></div>
+            <div id="stats-container" class="m-3 mx-15 transition-all grid opacity-0 invisible justify-items-center"></div>
 
             <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
             <script src="js/index.js"></script>
         </div>
+
     </body>
 </html>
