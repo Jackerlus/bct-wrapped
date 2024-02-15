@@ -16,37 +16,57 @@ $('#button-submit').click(function() {
     .then(data => {
         console.log(data); // Handle the response data here
 
-        const agentCounts = {};
-        let mostPlayedAgent = ["", 0];
-        data[0].forEach(match => {
-            const agent = match.agent;
-            if (agentCounts[agent]) {
-                agentCounts[agent]++;
-            } else {
-                agentCounts[agent] = 1;
-            }
-        });
-
-        for (const agent in agentCounts) {
-            if (agentCounts[agent] > mostPlayedAgent[1]) {
-                mostPlayedAgent[0] = agent;
-                mostPlayedAgent[1] = agentCounts[agent];
-            }
-        };
-        console.log("Most played agent: " + mostPlayedAgent[0] + " played " + mostPlayedAgent[1] + " times.");
-
-
+        const agent = findMostPlayedAgent(data);
+        console.log("Most played agent: " + agent[0] + " played " + agent[1] + " times.");
         $('#stats-container').empty();
-        $('#stats-container').append(`
-            <div class="basic-details grid opacity-0 invisible justify-items-center">
-                <img src="/img/${mostPlayedAgent[0]}_icon.png" class="max-w-50 border border-2 shadow-lg rounded-lg">
-                <p class="m-1 font-medium">${data[0][0]["player_name"]}</p>
-                <p class="m-1 font-medium">Seed ${data[0][0]["seed"]} &#8226; ${data[0][0]["team_name"]}</p>
-            </div>
-        `);
-        $('.basic-details').removeClass('opacity-0 invisible').addClass('opacity-100').hide().fadeIn();
+        generateBasics(data, agent);
+        $('#button-next').click(function() {
+            $('#stats-container').empty();
+            generateCombatStats(data);
+        });
     })
     .catch(error => {
         console.error('Error:', error);
     });
 });
+
+function findMostPlayedAgent(data) {
+    const agentCounts = {};
+    let mostPlayedAgent = ["", 0];
+    data[0].forEach(match => {
+        const agent = match.agent;
+        if (agentCounts[agent]) {
+            agentCounts[agent]++;
+        } else {
+            agentCounts[agent] = 1;
+        }
+    });
+
+    for (const agent in agentCounts) {
+        if (agentCounts[agent] > mostPlayedAgent[1]) {
+            mostPlayedAgent[0] = agent;
+            mostPlayedAgent[1] = agentCounts[agent];
+        }
+    };
+
+    return mostPlayedAgent;
+}
+
+function generateBasics(data, mostPlayedAgent) {
+    $('#stats-container').append(`
+        <img src="/img/${mostPlayedAgent[0]}_icon.png" class="m-2 max-w-50 border border-2 shadow-lg rounded-lg">
+        <p class="m-1 font-medium">${data[0][0]["player_name"]}</p>
+        <p class="m-1 font-medium">Seed ${data[0][0]["seed"]} &#8226; ${data[0][0]["team_name"]}</p>
+        <button id="button-next" class="m-3 p-2 max-w-15 max-h-10 font-base uppercase border-orange-400 active:bg-orange-400 hover:bg-orange-400/80 shadow-lg border rounded-lg transition-all">
+            Next
+        </button>
+    `);
+    $('#stats-container').removeClass('opacity-0 invisible').addClass('opacity-100').hide().fadeIn();
+}
+
+function generateCombatStats(data) {
+    $('#stats-container').append(`
+        <h2>Combat stats:</h2>
+        <p class="m-1 font-medium">Your average combat score is ${data[0][0]["seed"]}</p>
+    `);
+}
