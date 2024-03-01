@@ -64,7 +64,7 @@ router.post('/GetPercentileStats', (req, res, next) => {
 router.post('/GetMatchPlayerData', (req, res, next) => {
     const discord = req.body.discord;
     console.log("Making query to bct-stats DB with player discord: " + discord);
-    const query = "CALL GetPlayerWrappedPercentiles(?)"; // Stored procedure
+    const query = "CALL GetAllMatchPlayerData"; // Stored procedure
     dbConnection.query(query, [discord], (err, result) => {
         if (err) {
             console.error('Database Error:', err);
