@@ -8,20 +8,27 @@ $('#button-submit').click(function() {
     const discord = $('#input-discord').val();
     console.log("Discord user received: " + discord)
     Promise.all([
-        fetch('/bct-wrapped/getMatchStats', {
+        fetch('/bct-wrapped/GetMatchStats', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ discord: discord })
         }),
-        fetch('/bct-wrapped/getPercentileStats', {
+        fetch('/bct-wrapped/GetPercentileStats', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ discord: discord })
         }),
+        fetch('/bct-wrapped/GetMatchPlayerData', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ discord: discord })
+        })
     ])
     .then(responses => Promise.all(responses.map(response => response.json())))
     .then(data => {
@@ -29,14 +36,18 @@ $('#button-submit').click(function() {
 
         const matchData = data[0];
         const percentileData = data[1];
+        const matchPlayerData = data[2];
 
         const agent = findMostPlayedAgent(matchData);
         console.log("Most played agent: " + agent[0] + " played " + agent[1] + " times.");
         $('#stats-container').empty();
+
+        
+        
         generateBasics(matchData, agent);
         $('#button-next').click(function() {
             $('#button-next').remove();
-            generateCombatStats(matchData, percentileData, agent[0]);
+            generateCombatStats(matchData, percentileData, matchPlayerData, agent);
         });
     })
     .catch(error => {
@@ -67,6 +78,8 @@ function findMostPlayedAgent(matchData) {
     return mostPlayedAgent;
 }
 
+
+
 function generateBasics(matchData, mostPlayedAgent) {
     $('#basic-details').empty();
     $('#basic-details').append(`
@@ -80,7 +93,7 @@ function generateBasics(matchData, mostPlayedAgent) {
     $('#basic-details').removeClass('opacity-0 invisible').addClass('opacity-100').hide().fadeIn();
 }
 
-function generateCombatStats(matchData, percentileData, mostPlayedAgentName) {
+function generateCombatStats(matchData, percentileData, matchPlayerData, agent) {
     console.log(percentileData);
 
     let kd_remark;
@@ -136,11 +149,11 @@ function generateCombatStats(matchData, percentileData, mostPlayedAgentName) {
 
     $('#button-next').on('click', function() {
         $('#button-next').remove();
-        generateAssistStats(matchData, percentileData);
+        generateAssistStats(matchData, percentileData, matchPlayerData, agent);
     });
 }
 
-function generateAssistStats(matchData, percentileData) {
+function generateAssistStats(matchData, percentileData, matchPlayerData, agent) {
     let assists_remark;
     let assists_percentile = percentileData[0][0]["assists_percentile"];
     if (assists_percentile >= 80) {
@@ -197,11 +210,11 @@ function generateAssistStats(matchData, percentileData) {
 
     $('#button-next').on('click', function() {
         $('#button-next').remove();
-        generateBestMatch(matchData);
+        generateBestMatch(matchData, matchPlayerData, agent);
     });
 }
 
-function generateBestMatch(matchData) {
+function generateBestMatch(matchData, matchPlayerData, agent) {
     let bestACS = [0, 0];
     let matchCount = 0;
     matchData[0].forEach(match => {
@@ -233,6 +246,11 @@ function generateBestMatch(matchData) {
             </div>
         </div>
     </div>
+
+    <button id="button-next" class="m-3 p-2 max-w-15 max-h-10 font-base uppercase border-orange-400 active:bg-orange-400 hover:bg-orange-400/80 shadow-lg border rounded-lg transition-all">
+        Next
+    </button>
+
     `);
 
     const countUpACS = new CountUp('acs-count', matchData[0][bestACS[0]]["acs"], {"decimalPlaces": 0, "duration":3});
@@ -251,4 +269,14 @@ function generateBestMatch(matchData) {
     } else {
         console.error("countup error");
     }
+
+    $('#button-next').on('click', function() {
+        $('#button-next').remove();
+        generateAgentPerformance(matchData, matchPlayerData, agent);
+    });
+
+}
+
+function generateAgentPerformance(matchData, matchPlayerData, agent) {
+
 }
