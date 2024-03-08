@@ -227,7 +227,7 @@ function generateBestMatch(matchData, matchPlayerData, agent) {
 
     $('#stats-container').empty();
     $('#stats-container').append(`
-    <h2 class="m-3 font-medium text-2xl text-align-center">Your best performance:</h2>
+    <h2 class="m-3 font-semibold text-xl text-align-center">Your best performance:</h2>
     <div class="relative">
         <div class="absolute inset-0 z-0 bg-cover bg-center rounded-lg"
              style="background-image: url('img/${matchData[0][bestACS[0]]["map_name"]}.png'); filter: blur(3px);">
@@ -247,7 +247,7 @@ function generateBestMatch(matchData, matchPlayerData, agent) {
         </div>
     </div>
 
-    <button id="button-next" class="m-3 p-2 max-w-15 max-h-10 font-base uppercase border-orange-400 active:bg-orange-400 hover:bg-orange-400/80 shadow-lg border rounded-lg transition-all">
+    <button id="button-next" class="m-5 p-2 max-w-15 max-h-10 font-base uppercase border-orange-400 active:bg-orange-400 hover:bg-orange-400/80 shadow-lg border rounded-lg transition-all">
         Next
     </button>
 
@@ -318,20 +318,23 @@ function generateAgentPerformance(matchData, matchPlayerData, agent) {
     } else if (percentile > 10 && percentile <= 40) {
         agent_acs_remark = `promising talent in the ${agent[0]} department`;
     } else if (percentile > 40) {
-        agent_acs_remark = "watching boaster's youtube videos will get you top 3 no cap";
+        agent_acs_remark = "watch boaster's youtube videos and we'll get you to top 3 no cap";
     }
 
     $('#stats-container').empty();
     $('#stats-container').append(`
         <h2 class="m-3 font-semibold text-xl text-center">Performance on your most played agent:</h2>
-        <div class="best-match-stats max-w-xs w-72 justify-items-center grid">
+        <div class="max-w-xs w-72 justify-items-center grid">
             <div class="justify-items-center grid">
                 <p class="m-1 font-medium text-lg">Your ACS on ${agent[0]} is <span id="agent-acs-count"></span></p>
                 <p><span id="agent-acs-num-count" class="text-orange-500"></span> out of <span id="total-agent-players-count" class="text-orange-500"></span> ${agent[0]} players</p>
                 <p class="text-sm mb-3 mt-1">${agent_acs_remark}</p>
-                <br>
             </div>
+        <p class="text-sm text-center mt-7 font-medium">That's all for your BCT 6 Wrapped. See you next tournament.</p>
+        <p class="text-center text-xs mt-2">created by jackerlus</p>
+        <p class="text-center text-xs mt-1">based on BCT Stats system developed by jackerlus and bayfish</p>
         </div>
+
     `);
 
     const countUpAgentACS = new CountUp('agent-acs-count', averageAcsArray[index]["averageAcs"], {"decimalPlaces": 0, "duration":3});
