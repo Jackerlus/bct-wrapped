@@ -278,5 +278,76 @@ function generateBestMatch(matchData, matchPlayerData, agent) {
 }
 
 function generateAgentPerformance(matchData, matchPlayerData, agent) {
+    console.log("Agent: " + agent[0]);
+    const filteredData = matchPlayerData[0].filter(matchPlayer => matchPlayer.agent_name === agent[0]);
 
+    // Calculate average acs for each player
+    const playerAcs = {};
+    filteredData.forEach(matchPlayer => {
+        if (!playerAcs[matchPlayer.player_name]) {
+            playerAcs[matchPlayer.player_name] = { totalAcs: 0, count: 0 };
+        }
+        playerAcs[matchPlayer.player_name].totalAcs += matchPlayer.acs;
+        playerAcs[matchPlayer.player_name].count++;
+    });
+
+    // Calculate average acs and store in an array of key-value pairs
+    const averageAcsArray = [];
+    for (const player in playerAcs) {
+        const averageAcs = playerAcs[player].totalAcs / playerAcs[player].count;
+        averageAcsArray.push({ player, averageAcs });
+    }
+
+    // Sort the array by averageAcs in descending order
+    averageAcsArray.sort((a, b) => b.averageAcs - a.averageAcs);
+    console.log(averageAcsArray);
+
+    // Find the index of the element with the given player_name
+    const index = averageAcsArray.findIndex(element => element.player === matchData[0][0]["player_name"]);
+
+    // Calculate percentile for the element
+    const totalAgentPlayers = averageAcsArray.length;
+    const percentile = ((index + 1) / totalAgentPlayers) * 100;
+
+    console.log("Percentile for this player's agent performance: " + percentile + "%");
+
+    let agent_acs_remark;
+    if (percentile <= 10) {
+        agent_acs_remark = `one of the greatest ${agent[0]}s of our time`;
+    } else if (percentile > 10 && percentile <= 40) {
+        agent_acs_remark = `promising talent in the ${agent[0]} department`;
+    } else if (percentile > 40) {
+        agent_acs_remark = "watching boaster's youtube videos will get you top 3 no cap";
+    }
+
+    $('#stats-container').empty();
+    $('#stats-container').append(`
+        <h2 class="m-3 font-semibold text-xl text-center">Performance on your most played agent:</h2>
+        <div class="best-match-stats max-w-xs w-72 justify-items-center grid">
+            <div class="justify-items-center grid">
+                <p class="m-1 font-medium text-lg">Your ACS on ${agent[0]} is <span id="agent-acs-count"></span></p>
+                <p><span id="agent-acs-num-count" class="text-orange-500"></span> out of <span id="total-agent-players-count" class="text-orange-500"></span> ${agent[0]} players</p>
+                <p class="text-sm mb-3 mt-1">${agent_acs_remark}</p>
+                <br>
+            </div>
+        </div>
+    `);
+
+    const countUpAgentACS = new CountUp('agent-acs-count', averageAcsArray[index]["averageAcs"], {"decimalPlaces": 0, "duration":3});
+    console.log(countUpAgentACS);
+    const countUpAgentACSNum = new CountUp('agent-acs-num-count', index + 1, {"prefix":"#", "decimalPlaces": 0, "duration":3});
+    console.log(countUpAgentACSNum);
+    // const countUpAgentACSPercentile = new CountUp('agent-acs-percentile-count', percentile, {"suffix":"%", "decimalPlaces": 0, "duration":3});
+    // console.log(countUpAgentACSPercentile);
+    const countUpTotalAgentPlayers = new CountUp('total-agent-players-count', averageAcsArray.length, {"decimalPlaces": 0, "duration":3});
+    console.log(countUpTotalAgentPlayers);
+
+    if (!countUpAgentACS.error && !countUpAgentACSNum.error && !countUpTotalAgentPlayers.error) {
+        countUpAgentACS.start();
+        countUpAgentACSNum.start();
+        countUpTotalAgentPlayers.start();
+        // countUpAgentACSPercentile.start();
+    } else {
+        console.error("countup error");
+    }
 }
