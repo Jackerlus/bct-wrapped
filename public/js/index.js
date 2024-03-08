@@ -272,6 +272,7 @@ function generateBestMatch(matchData, matchPlayerData, agent) {
 
     $('#button-next').on('click', function() {
         $('#button-next').remove();
+        console.log("Generating agent data");
         generateAgentPerformance(matchData, matchPlayerData, agent);
     });
 
