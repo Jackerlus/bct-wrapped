@@ -4,6 +4,24 @@ $(window).on('load', function() {
     $("#loader-wrapper").fadeOut(700);
 });
 
+/*  NOTE: This below event handler triggers the wrapped event chain.
+    Data is pulled via three different DB queries. Some of this returns redundant data:
+
+    - GetMatchStats calls the GetPlayerWrappedMatches stored procedure.
+        This selects match_player_data rows only where the given player was participating.
+    - GetPercentileStats calls the GetPlayerWrappedPercentiles procedure.
+        This selects key player stat averages across their played matches and works out a
+        percentile for those stats compared to every other player.
+    - GetMatchPlayerData calls the GetAllMatchPlayerData procedure.
+        This procedure just selects all match_player_data rows. This was necessary because
+        it was too complicated to get the specific percentiles and averages of the agent
+        performance of a player compared to their peers via SQL only, so I opted to manipulate
+        all the match_player_data rows in an object myself instead.
+
+    Since the last one required all data be pulled anyway, it may be worth moving the other 2
+    procedures into javascript also to keep things consistent.
+*/
+
 $('#button-submit').click(function() {
     const discord = $('#input-discord').val();
     console.log("Discord user received: " + discord)
@@ -46,6 +64,8 @@ $('#button-submit').click(function() {
         
         generateBasics(matchData, agent);
         $('#button-next').click(function() {
+            /* Every time we want to generate a new section we need to remove the button first
+            so it can be created with the next generation function if necessary. */
             $('#button-next').remove();
             generateCombatStats(matchData, percentileData, matchPlayerData, agent);
         });
@@ -93,6 +113,7 @@ function generateBasics(matchData, mostPlayedAgent) {
     $('#basic-details').removeClass('opacity-0 invisible').addClass('opacity-100').hide().fadeIn();
 }
 
+// K/D and ACS stat reports
 function generateCombatStats(matchData, percentileData, matchPlayerData, agent) {
     console.log(percentileData);
 
@@ -153,6 +174,7 @@ function generateCombatStats(matchData, percentileData, matchPlayerData, agent) 
     });
 }
 
+// Assist and ultimate cast stat reports
 function generateAssistStats(matchData, percentileData, matchPlayerData, agent) {
     let assists_remark;
     let assists_percentile = percentileData[0][0]["assists_percentile"];
@@ -214,6 +236,7 @@ function generateAssistStats(matchData, percentileData, matchPlayerData, agent) 
     });
 }
 
+// Best match performance report
 function generateBestMatch(matchData, matchPlayerData, agent) {
     let bestACS = [0, 0];
     let matchCount = 0;
@@ -278,6 +301,7 @@ function generateBestMatch(matchData, matchPlayerData, agent) {
 
 }
 
+// Most played agent performance (maybe change to just best agent performance altogether)
 function generateAgentPerformance(matchData, matchPlayerData, agent) {
     console.log("Agent: " + agent[0]);
     const filteredData = matchPlayerData[0].filter(matchPlayer => matchPlayer.agent_name === agent[0]);
