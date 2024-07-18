@@ -1,2 +1,4 @@
 # bct-wrapped
-WIP web app for showing player performance summaries in the Boaster Community Tournament series (AKA BCT), similar in function to Spotify Wrapped.
+Web app for showing player performance summaries in the Boaster Community Tournament series (AKA BCT), similar in function to Spotify Wrapped.
+
+Built with Node/ExpressJS.
